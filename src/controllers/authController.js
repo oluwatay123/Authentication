@@ -1,90 +1,5 @@
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-// const { createUser, getUserByEmail } = require('../models/userModel');
-// const { v4: uuidv4 } = require('uuid');
-// require('dotenv').config();
-
-// const register = async (req, res) => {
-//   const { firstName, lastName, email, password, phone } = req.body;
-
-//   try {
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     const user = {
-//       userId: uuidv4(),
-//       firstName,
-//       lastName,
-//       email,
-//       password: hashedPassword,
-//       phone,
-//     };
-
-//     const { data, error } = await createUser(user);
-//     if (error || !data) {
-//       console.error('Error creating user:', error);
-//       return res.status(400).json({ status: 'Bad request', message: 'Registration unsuccessful', statusCode: 400 });
-//     }
-
-//     const token = jwt.sign({ userId: data[0].userId, email: data[0].email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//     return res.status(201).json({
-//       status: 'success',
-//       message: 'Registration successful',
-//       data: {
-//         accessToken: token,
-//         user: {
-//           userId: data[0].userId,
-//           firstName: data[0].firstName,
-//           lastName: data[0].lastName,
-//           email: data[0].email,
-//           phone: data[0].phone,
-//         },
-//       },
-//     });
-//   } catch (err) {
-//     console.error('Unexpected error:', err);
-//     return res.status(500).json({ status: 'Error', message: 'Internal Server Error', statusCode: 500 });
-//   }
-// };
-
-// const login = async (req, res) => {
-//   const { email, password } = req.body;
-
-//   try {
-//     const { data, error } = await getUserByEmail(email);
-//     if (error || !data) {
-//       console.error('Error fetching user:', error);
-//       return res.status(401).json({ status: 'Bad request', message: 'Authentication failed', statusCode: 401 });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, data.password);
-//     if (!isMatch) {
-//       return res.status(401).json({ status: 'Bad request', message: 'Authentication failed', statusCode: 401 });
-//     }
-
-//     const token = jwt.sign({ userId: data.userId, email: data.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//     return res.status(200).json({
-//       status: 'success',
-//       message: 'Login successful',
-//       data: {
-//         accessToken: token,
-//         user: {
-//           userId: data.userId,
-//           firstName: data.firstName,
-//           lastName: data.lastName,
-//           email: data.email,
-//           phone: data.phone,
-//         },
-//       },
-//     });
-//   } catch (err) {
-//     console.error('Unexpected error:', err);
-//     return res.status(500).json({ status: 'Error', message: 'Internal Server Error', statusCode: 500 });
-//   }
-// };
-
-// module.exports = { register, login };
 
 
-// src/controllers/authController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
@@ -108,14 +23,7 @@ exports.register = async (req, res) => {
   }
 
   try {
-    // // Check if user exists
-    // const { data: existingUser } = await User.findByEmail(email);
-    // if (existingUser) {
-    //   return res.status(422).json({
-    //     errors: [{ field: 'email', message: 'Email already exists' }]
-    //   });
-    // }
-
+    
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
