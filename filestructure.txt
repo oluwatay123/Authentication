@@ -1,0 +1,64 @@
+.
+├── controllers
+│   ├── authController.js
+│   └── organisationController.js
+├── middlewares
+│   └── authMiddleware.js
+├── models
+│   ├── userModel.js
+│   └── organisationModel.js
+├── routes
+│   ├── authRoutes.js
+│   └── organisationRoutes.js
+├── tests
+│   └── auth.spec.js
+├── utils
+│   └── supabaseClient.js
+├── .env
+├── app.js
+└── package.json
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const supabase = require('../utils/supabaseClient');
+
+const User = {
+  async create(user) {
+    return await supabase.from('users').insert(user);
+  },
+  async findByEmail(email) {
+    return await supabase.from('users').select().eq('email', email).single();
+  },
+  async findById(id) {
+    return await supabase.from('users').select().eq('userId', id).single();
+  }
+};
+
+module.exports = User;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
