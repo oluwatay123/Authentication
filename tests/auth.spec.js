@@ -1,22 +1,10 @@
 const request = require('supertest');
-const app = require('../server'); // Adjust the path as per your project structure
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const app = require('../src/app');
 
-describe('Auth Endpoints', () => {
-  let server;
-
-  beforeAll(() => {
-    server = app.listen(3000, () => console.log('Test server running on port 3000'));
-  });
-
-  afterAll((done) => {
-    server.close(done);
-  });
-
+describe('Register Endpoint', () => {
   it('should register user successfully with default organisation', async () => {
-    const res = await request(server)
-      .post('/auth/register')
+    const response = await request(app)
+      .post('/api/auth/register')
       .send({
         firstName: 'John',
         lastName: 'Doe',
@@ -24,82 +12,102 @@ describe('Auth Endpoints', () => {
         password: 'password123',
         phone: '1234567890'
       });
-    
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('data');
-    expect(res.body.data).toHaveProperty('accessToken');
-    expect(res.body.data.user.firstName).toEqual('John');
-    expect(res.body.data.user.lastName).toEqual('Doe');
-    expect(res.body.data.user.email).toEqual('john.doe@example.com');
-    expect(res.body.data.user.phone).toEqual('1234567890');
+
+    expect(response.status).toBe(201);
+    expect(response.body.status).toBe('success');
+    expect(response.body.data.user.firstName).toBe('John');
+    expect(response.body.data.organisation.name).toBe("John's Organisation");
   });
 
   it('should log the user in successfully', async () => {
-    const res = await request(server)
-      .post('/auth/login')
+    const response = await request(app)
+      .post('/api/auth/login')
       .send({
         email: 'john.doe@example.com',
         password: 'password123'
       });
 
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('data');
-    expect(res.body.data).toHaveProperty('accessToken');
-    expect(res.body.data.user.email).toEqual('john.doe@example.com');
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('success');
+    expect(response.body.data.user.email).toBe('john.doe@example.com');
   });
 
   it('should fail if required fields are missing', async () => {
-    const res = await request(server)
-      .post('/auth/register')
+    const response = await request(app)
+      .post('/api/auth/register')
       .send({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        phone: ''
+        email: 'missing.fields@example.com',
+        password: 'password123'
       });
 
-    expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty('errors');
-    expect(res.body.errors).toEqual(
+    expect(response.status).toBe(422);
+    expect(response.body.errors).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ field: 'firstName', message: 'First name is required' }),
-        expect.objectContaining({ field: 'lastName', message: 'Last name is required' }),
-        expect.objectContaining({ field: 'email', message: 'Email is required' }),
-        expect.objectContaining({ field: 'password', message: 'Password is required' })
+        expect.objectContaining({ field: 'firstName' }),
+        expect.objectContaining({ field: 'lastName' }),
+        expect.objectContaining({ field: 'phone' }),
       ])
     );
   });
 
-  it('should fail if there is duplicate email or userID', async () => {
-    // Register first user
-    await request(server)
-      .post('/auth/register')
+  it('should fail if there’s a duplicate email', async () => {
+    const response = await request(app)
+      .post('/api/auth/register')
       .send({
         firstName: 'Jane',
         lastName: 'Doe',
-        email: 'jane.doe@example.com',
+        email: 'john.doe@example.com',
         password: 'password123',
         phone: '1234567890'
       });
 
-    // Try to register another user with the same email
-    const res = await request(server)
-      .post('/auth/register')
-      .send({
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane.doe@example.com',
-        password: 'password123',
-        phone: '0987654321'
-      });
-
-    expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty('errors');
-    expect(res.body.errors).toEqual(
+    expect(response.status).toBe(422);
+    expect(response.body.errors).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ field: 'email', message: 'Email already exists' })
+        expect.objectContaining({ message: 'Email already in use' }),
       ])
     );
+  });
+});
+
+describe('Token Generation', () => {
+  const jwt = require('jsonwebtoken');
+  const { authenticateToken } = require('../src/controllers/authController');
+
+  it('should generate a token with correct user details', () => {
+    const user = { id: 'userId123', email: 'test@example.com' };
+    const token = authenticateToken(user);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    expect(decoded.userId).toBe(user.id);
+    expect(decoded.email).toBe(user.email);
+  });
+
+  it('should generate a token that expires in 1 hour', () => {
+    const user = { id: 'userId123', email: 'test@example.com' };
+    const token = authenticateToken(user);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const expiresIn = decoded.exp - decoded.iat;
+    expect(expiresIn).toBe(3600); // 1 hour = 3600 seconds
+  });
+});
+
+describe('Organisation Access', () => {
+  let token;
+
+  beforeAll(() => {
+    // Generate a token for a test user
+    const user = { id: 'userId123', email: 'test@example.com' };
+    token = authenticateToken(user);
+  });
+
+  it('should not allow users to see organisations they do not belong to', async () => {
+    const response = await request(app)
+      .get('/api/organisations/some-org-id')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.message).toBe('Access denied');
   });
 });

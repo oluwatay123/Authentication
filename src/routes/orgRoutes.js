@@ -1,12 +1,4 @@
-// const express = require('express');
-// const { createOrganisation, getOrganisations } = require('../controllers/orgController');
-// const authenticate = require('../middleware/authMiddleware');
-// const router = express.Router();
 
-// router.post('/', authenticate, createOrganisation);
-// router.get('/', authenticate, getOrganisations);
-
-// module.exports = router;
 
 
 const express = require('express');
