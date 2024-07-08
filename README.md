@@ -1,145 +1,168 @@
-Here's a basic structure for your README file that explains how to access the endpoints using Postman:
+Here's an expanded version of the README file for your project, focusing on how users should use Postman and configure endpoints:
 
 ---
 
 # Project README
 
-This project implements endpoints for user authentication, organization management, and user-organization associations.
+## Overview
 
-## Getting Started
+This project implements backend APIs for user registration, authentication, and organization management using Node.js, Express, and Supabase.
 
-### Prerequisites
+## Installation
 
-Ensure you have the following installed:
-- Node.js
-- npm (Node Package Manager)
-- PostgreSQL or Supabase database
-
-### Installation
-
-1. Clone the repository:
+1. **Clone the Repository:**
    ```bash
    git clone <repository_url>
-   cd <project_folder>
+   cd backend-task
    ```
 
-2. Install dependencies:
+2. **Install Dependencies:**
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
-   - Create a `.env` file in the root directory.
-   - Define the following variables:
-     ```plaintext
-     PORT=6000
-     DATABASE_URL=<your_database_url>
-     JWT_SECRET=<your_jwt_secret>
-     ```
+3. **Set Environment Variables:**
+   Create a `.env` file in the root directory and configure the following variables:
+   ```plaintext
+   PORT=6000
+   SUPABASE_URL=<your_supabase_url>
+   SUPABASE_KEY=<your_supabase_key>
+   JWT_SECRET=<your_jwt_secret>
+   ```
 
-4. Run the server:
+4. **Run the Application:**
    ```bash
    npm start
    ```
+   The server will run on `http://localhost:6000`.
 
-## Usage
+## Endpoints
 
 ### Authentication
 
-#### Register a User
-- **Endpoint**: POST `/api/auth/register`
-- **Request Body**:
+#### Register User
+
+- **Endpoint:** `POST /api/auth/register`
+- **Description:** Register a new user.
+- **Request Body:**
   ```json
   {
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "john.doe@example.com",
-    "password": "your_password",
-    "phone": "1234567890"
+    "firstName": "string",
+    "lastName": "string",
+    "email": "string",
+    "password": "string",
+    "phone": "string"
   }
   ```
-- **Response**:
+- **Successful Response:**
   ```json
   {
     "status": "success",
     "message": "Registration successful",
     "data": {
-      "accessToken": "<your_access_token>",
+      "accessToken": "string",
       "user": {
         "userId": "string",
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "john.doe@example.com",
-        "phone": "1234567890"
+        "firstName": "string",
+        "lastName": "string",
+        "email": "string",
+        "phone": "string"
       }
     }
   }
   ```
 
-#### Login a User
-- **Endpoint**: POST `/api/auth/login`
-- **Request Body**:
+#### Login User
+
+- **Endpoint:** `POST /api/auth/login`
+- **Description:** Log in an existing user.
+- **Request Body:**
   ```json
   {
-    "email": "john.doe@example.com",
-    "password": "your_password"
+    "email": "string",
+    "password": "string"
   }
   ```
-- **Response**:
+- **Successful Response:**
   ```json
   {
     "status": "success",
     "message": "Login successful",
     "data": {
-      "accessToken": "<your_access_token>",
+      "accessToken": "string",
       "user": {
         "userId": "string",
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "john.doe@example.com",
-        "phone": "1234567890"
+        "firstName": "string",
+        "lastName": "string",
+        "email": "string",
+        "phone": "string"
       }
     }
   }
   ```
 
-### Organizations
+### User Management
 
-#### Create an Organization
-- **Endpoint**: POST `/api/organisations`
-- **Request Body**:
+#### Get User by ID
+
+- **Endpoint:** `GET /api/users/:id`
+- **Description:** Retrieve user details by user ID.
+- **Successful Response:**
   ```json
   {
-    "name": "My Organization",
-    "description": "A brief description"
+    "status": "success",
+    "message": "User found",
+    "data": {
+      "userId": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "email": "string",
+      "phone": "string"
+    }
   }
   ```
-- **Response**:
+
+### Organization Management
+
+#### Create Organization
+
+- **Endpoint:** `POST /api/organisations`
+- **Description:** Create a new organization.
+- **Request Body:**
+  ```json
+  {
+    "name": "string",
+    "description": "string"
+  }
+  ```
+- **Successful Response:**
   ```json
   {
     "status": "success",
     "message": "Organisation created successfully",
     "data": {
       "orgId": "string",
-      "name": "My Organization",
-      "description": "A brief description"
+      "name": "string",
+      "description": "string"
     }
   }
   ```
 
-#### Get User's Organizations
-- **Endpoint**: GET `/api/organisations`
-- **Response**:
+#### Get All User's Organizations
+
+- **Endpoint:** `GET /api/organisations`
+- **Description:** Retrieve all organizations the logged-in user belongs to or created.
+- **Successful Response:**
   ```json
   {
     "status": "success",
-    "message": "Organizations retrieved successfully",
+    "message": "Organisations retrieved successfully",
     "data": {
       "organisations": [
         {
           "orgId": "string",
-          "name": "My Organization",
-          "description": "A brief description"
+          "name": "string",
+          "description": "string"
         }
       ]
     }
@@ -147,29 +170,33 @@ Ensure you have the following installed:
   ```
 
 #### Get Organization by ID
-- **Endpoint**: GET `/api/organisations/:orgId`
-- **Response**:
+
+- **Endpoint:** `GET /api/organisations/:orgId`
+- **Description:** Retrieve a single organization record by its ID.
+- **Successful Response:**
   ```json
   {
     "status": "success",
-    "message": "Organization retrieved successfully",
+    "message": "Organisation found",
     "data": {
       "orgId": "string",
-      "name": "My Organization",
-      "description": "A brief description"
+      "name": "string",
+      "description": "string"
     }
   }
   ```
 
 #### Add User to Organization
-- **Endpoint**: POST `/api/organisations/:orgId/users`
-- **Request Body**:
+
+- **Endpoint:** `POST /api/organisations/:orgId/users`
+- **Description:** Add a user to a specific organization.
+- **Request Body:**
   ```json
   {
     "userId": "string"
   }
   ```
-- **Response**:
+- **Successful Response:**
   ```json
   {
     "status": "success",
@@ -177,12 +204,27 @@ Ensure you have the following installed:
   }
   ```
 
-## Error Handling
+---
 
-- **401 Unauthorized**: Authentication failed or token expired.
-- **400 Bad Request**: Invalid client request.
-- **404 Not Found**: Resource not found.
+## Using Postman
+
+1. **Set Environment Variables:**
+   - Set up a Postman environment with the following variables:
+     - `base_url`: `http://localhost:6000` (or your server URL)
+     - `accessToken`: Obtain from successful login or registration responses.
+
+2. **Configure Requests:**
+   - Import the provided Postman collection.
+   - Set the `Authorization` header with `Bearer {{accessToken}}` for protected endpoints.
+   - Replace variables (`:id`, `:orgId`, etc.) in the endpoint URLs as needed.
+
+3. **Test Endpoints:**
+   - Send requests to endpoints using Postman.
+   - Verify responses for success or error messages.
+
+4. **Handle Errors:**
+   - Handle errors gracefully based on the status codes and messages provided in the responses.
 
 ---
 
-Adjust the endpoints, request bodies, and responses as per your actual implementation details. This structure should give users a clear understanding of how to interact with your API using Postman.
+This README should help users understand how to interact with your backend APIs using Postman, configure endpoints correctly, and manage requests effectively. Adjust paths, descriptions, and examples as needed for your specific implementation and requirements.
