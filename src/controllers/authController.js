@@ -149,7 +149,7 @@ exports.register = async (req, res) => {
   }
 };
 
-
+// to get users by ID 
 exports.getUser = async (req, res) => {
   const { id } = req.params;
 
@@ -166,7 +166,15 @@ exports.getUser = async (req, res) => {
     }
 
     // Return user data
-    res.status(200).json({ status: 'Success',  data: user});
+    res.status(200).json({ status: 'Success',    
+        message: 'Retrieval successful',
+      data:{
+      id: user.data.userId,
+      firstName: user.data.firstName,
+      lastName: user.data.lastName,
+      email: user.data.email,
+      phone: user.data.phone}
+    });
   } catch (err) {
     console.error('Error fetching user:', err);
     res.status(500).json({ status: 'Error', message: 'Internal Server Error' });

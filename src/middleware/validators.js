@@ -1,11 +1,28 @@
 const { check, validationResult } = require('express-validator');
 
+// User validation rules
 const userValidationRules = () => {
   return [
-    check('firstName').not().isEmpty().withMessage('First name is required'),
-    check('lastName').not().isEmpty().withMessage('Last name is required'),
+    check('firstName').not().isEmpty().trim().withMessage('First name is required'),
+    check('lastName').not().isEmpty().trim().withMessage('Last name is required'),
     check('email').isEmail().withMessage('Invalid email format'),
     check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    check('phone').not().isEmpty().trim().withMessage('Phone number is required'),
+  ];
+};
+
+// Organization validation rules
+const organisationValidationRules = () => {
+  return [
+    check('name').not().isEmpty().trim().withMessage('Organization name is required'),
+    check('description').optional().isString().withMessage('Description must be a string'),
+  ];
+};
+
+// User ID validation rule for adding user to organization
+const addUserToOrganisationValidationRules = () => {
+  return [
+    check('userId').isUUID().withMessage('Invalid userId format'),
   ];
 };
 
@@ -25,5 +42,7 @@ const validate = (req, res, next) => {
 
 module.exports = {
   userValidationRules,
+  organisationValidationRules,
+  addUserToOrganisationValidationRules,
   validate,
 };
