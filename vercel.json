@@ -2,19 +2,22 @@
     "version": 2,
     "builds": [
         {
-            "src": "index.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "dist/**"
-                ]
-            }
+            "src": "src/**/*.js",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
         {
-            "src": "/(.*)",
-            "dest": "index.js"
+            "src": "/api/auth/(.*)",
+            "dest": "/src/routes/authRoutes.js"
+        },
+        {
+            "src": "/api/organisations/(.*)",
+            "dest": "/src/routes/orgRoutes.js"
+        },
+        {
+            "src": "/api/users/(.*)",
+            "dest": "/src/routes/userIdRoutes.js"
         }
     ]
 }
