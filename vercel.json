@@ -8,16 +8,8 @@
     ],
     "routes": [
         {
-            "src": "/api/auth/(.*)",
-            "dest": "/src/routes/authRoutes.js"
-        },
-        {
-            "src": "/api/organisations/(.*)",
-            "dest": "/src/routes/orgRoutes.js"
-        },
-        {
-            "src": "/api/users/(.*)",
-            "dest": "/src/routes/userIdRoutes.js"
+          "src": "/(.*)",
+          "dest": "index.js"
         }
-    ]
+      ]
 }
