@@ -1,5 +1,5 @@
 
-const supabase = require('../utils/ db');
+const supabase = require('../utils/db');
 
 const User = {
   async create(user) {

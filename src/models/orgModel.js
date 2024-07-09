@@ -1,4 +1,4 @@
-const supabase = require('../utils/ db');
+const supabase = require('../utils/db');
 
 const Organisation = {
   async create ({ orgId, name, description, users }) {

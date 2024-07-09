@@ -4,7 +4,7 @@ const router = express.Router();
 const organisationController = require('../controllers/orgController');
 const authMiddleware = require('../middleware/authMiddleware');
 const { authenticateToken } = require('../middleware/authMiddleware');
-const { auth } = require('../utils/ db');
+const { auth } = require('../utils/db');
 const { organisationValidationRules, addUserToOrganisationValidationRules, validate } = require('../middleware/validators');
 
 // Protected route to get organisations
